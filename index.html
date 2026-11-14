@@ -3,274 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Q-OPTIMA SENTINEL | AI Satellite Disaster Intelligence</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>Planetary Pulse | Team Q-OPTIMA — NASA Space Apps 2026</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="hud-container">
-        <!-- TOP HEADER -->
-        <header class="hud-header">
-            <div class="brand">
-                <div class="pulse-radar"></div>
-                <div>
-                    <h1>Q-OPTIMA SENTINEL <span class="version-tag">v4.5-CAP-CELLULAR</span></h1>
-                    <p class="subtitle" data-i18n="header_sub">AUTONOMOUS SATELLITE DISASTER INTELLIGENCE & RAPID DECISION SUPPORT PLATFORM</p>
-                </div>
+    <header class="app-header">
+        <div class="header-content">
+            <div class="badge-row">
+                <span class="badge">2026 NASA Space Apps Challenge</span>
+                <span class="badge badge-outline">Team Q-OPTIMA</span>
             </div>
-            <div class="telemetry-bar">
-                <div class="lang-selector-box">
-                    <label for="langSelect">🌐 LANGUAGE:</label>
-                    <select id="langSelect" onchange="changeLanguage(this.value)">
-                        <option value="en" selected>English (Global)</option>
-                        <option value="hi">हिन्दी (Hindi)</option>
-                        <option value="mr">मराठी (Marathi)</option>
-                        <option value="ta">தமிழ் (Tamil)</option>
-                        <option value="te">తెలుగు (Telugu)</option>
-                        <option value="bn">বাংলা (Bengali)</option>
-                        <option value="or">ଓଡ଼ିଆ (Odia)</option>
-                    </select>
-                </div>
-                <div class="tag">ISRO MOSDAC: <span class="active">UPLINK ACTIVE</span></div>
-                <div class="tag">C-DOT CAP GATEWAY: <span class="active">SYNCHRONIZED</span></div>
-            </div>
-        </header>
-
-        <!-- 6-STAGE PIPELINE INDICATOR -->
-        <div class="pipeline-flow">
-            <div class="pipe-node active" id="p1"><span>01</span> <b data-i18n="p1">SATELLITE INGEST</b></div>
-            <div class="pipe-arrow">➔</div>
-            <div class="pipe-node" id="p2"><span>02</span> <b data-i18n="p2">RADIOMETRIC CAL / CLAHE</b></div>
-            <div class="pipe-arrow">➔</div>
-            <div class="pipe-node" id="p3"><span>03</span> <b data-i18n="p3">SPECTRAL TENSOR MAPPING</b></div>
-            <div class="pipe-arrow">➔</div>
-            <div class="pipe-node" id="p4"><span>04</span> <b data-i18n="p4">AI ANOMALY DETECTION</b></div>
-            <div class="pipe-arrow">➔</div>
-            <div class="pipe-node" id="p5"><span>05</span> <b data-i18n="p5">SEVERITY & KINETICS</b></div>
-            <div class="pipe-arrow">➔</div>
-            <div class="pipe-node" id="p6"><span>06</span> <b data-i18n="p6">RAPID DECISION SUPPORT</b></div>
+            <h1>Planetary Pulse: Earth System Trend Detective</h1>
+            <p class="subtitle">Statistical Significance Engine & Multi-Decadal NASA Satellite Telemetry (2003–2026)</p>
         </div>
+    </header>
 
-        <!-- MAIN 3-COLUMN DASHBOARD -->
-        <main class="grid-layout">
-            <!-- LEFT PANEL: Ingestion, Mobile CSV & Sandbox -->
-            <section class="glass-card panel-left">
-                <div class="card-title"><h3 data-i18n="panel1_title">01 / TELEMETRY & DISPATCH INGEST</h3></div>
-                
-                <div class="input-group">
-                    <label data-i18n="lbl_sensor">Satellite Sensor Constellation:</label>
-                    <select id="sensorSelect">
-                        <option value="CARTOSAT_3">ISRO Cartosat-3 (0.28m High-Res Optical)</option>
-                        <option value="RISAT_1A">ISRO EOS-04 RISAT-1A (C-Band SAR Radar)</option>
-                        <option value="OCEANSAT_3">ISRO Oceansat-3 (Scatterometer Thermal)</option>
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <label data-i18n="lbl_disaster">Target Disaster Scenario:</label>
-                    <select id="disasterTypeSelect" onchange="updateTargetCoordinates()">
-                        <option value="WILDFIRE">Forest Fire Front (Simlipal Biosphere / Western Ghats)</option>
-                        <option value="FLOOD">Inundation & Flood Extent (Assam Brahmaputra Basin)</option>
-                        <option value="CYCLONE">Tropical Cyclone Vortex (Bay of Bengal Coast)</option>
-                        <option value="LANDSLIDE">Seismic Debris Corridor (Chamoli Himalayan Belt)</option>
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <label>Post-Disaster Raster Input (Required):</label>
-                    <input type="file" id="imageInputPost" accept="image/*" onchange="previewPostImage(event)">
-                </div>
-
-                <div class="input-group">
-                    <label>Pre-Disaster Baseline Raster (Optional Bi-Temporal):</label>
-                    <input type="file" id="imageInputPre" accept="image/*">
-                </div>
-
-                <div class="input-group">
-                    <label>Mobile Contact Numbers Matrix (.CSV):</label>
-                    <input type="file" id="contactsCsvInput" accept=".csv">
-                </div>
-
-                <!-- LIVE SMS GATEWAY DRAWER -->
-                <details class="api-gateway-drawer">
-                    <summary>🔑 LIVE TWILIO / SMS GATEWAY (OPTIONAL)</summary>
-                    <div class="api-inputs">
-                        <input type="text" id="twilioSid" placeholder="Twilio Account SID (e.g. AC...)" autocomplete="off">
-                        <input type="password" id="twilioToken" placeholder="Twilio Auth Token" autocomplete="off">
-                        <input type="text" id="twilioFrom" placeholder="Twilio Sender No (e.g. +1234567890)">
-                        <span class="api-note">Leave blank to use Simulated Telecom Mesh Mode</span>
-                    </div>
-                </details>
-
-                <!-- ATMOSPHERIC SIMULATION SANDBOX -->
-                <div class="sandbox-box">
-                    <div class="sandbox-header">⚡ DYNAMIC HAZARD SIMULATION SANDBOX</div>
-                    <div class="slider-control">
-                        <div class="slider-lbl"><span>Wind Velocity:</span> <b id="windVal">35 km/h</b></div>
-                        <input type="range" id="windSlider" min="0" max="120" value="35" oninput="document.getElementById('windVal').innerText = this.value + ' km/h'">
-                    </div>
-                    <div class="slider-control">
-                        <div class="slider-lbl"><span>Rainfall Rate:</span> <b id="rainVal">60 mm/hr</b></div>
-                        <input type="range" id="rainSlider" min="0" max="250" value="60" oninput="document.getElementById('rainVal').innerText = this.value + ' mm/hr'">
-                    </div>
-                </div>
-
-                <button class="cyber-btn" id="runPipelineBtn" onclick="runPipeline()">
-                    ⚡ <span data-i18n="btn_execute">EXECUTE AI INFERENCE PIPELINE</span>
-                </button>
-
-                <div class="telemetry-box">
-                    <div class="box-header" data-i18n="lbl_logs">REAL-TIME TELEMETRY STREAM</div>
-                    <div class="telemetry-logs" id="telemetryLogs">
-                        <p class="log">[CORE] Initialized. Ready for orbital ingestion feed...</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- CENTER PANEL: Bi-Temporal Split Slider, GIS Map & Cellular Dispatch -->
-            <section class="glass-card panel-center">
-                <div class="panel-header-sub">
-                    <div class="tab-buttons">
-                        <button class="tab-btn active" id="btnViewAi" onclick="switchCenterView('ai')" data-i18n="tab_ai">BI-TEMPORAL CHANGE DETECTION</button>
-                        <button class="tab-btn" id="btnViewMap" onclick="switchCenterView('map')" data-i18n="tab_map">GIS INFRASTRUCTURE & EVACUATION MAP</button>
-                        <button class="tab-btn" id="btnViewSms" onclick="switchCenterView('sms')">📱 CELLULAR ALERT DISPATCH</button>
-                    </div>
-                    <div id="liveBadge" class="badge" data-i18n="badge_awaiting">AWAITING INGEST</div>
-                </div>
-
-                <!-- Bi-Temporal Swipe-Slider Container -->
-                <div class="center-content-box" id="aiViewContainer">
-                    <div class="split-slider-wrapper" id="sliderWrapper">
-                        <div class="split-img-layer before-layer">
-                            <img id="rawPreviewImg" src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200" alt="Pre/Raw Satellite">
-                            <span class="split-badge left-badge">PRE-DISASTER / RAW</span>
-                        </div>
-                        <div class="split-img-layer after-layer" id="afterLayer">
-                            <img id="processedPreview" src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200" alt="AI Analyzed Satellite">
-                            <span class="split-badge right-badge">POST-DISASTER AI DELINEATION</span>
-                        </div>
-                        <div class="split-handle" id="splitHandle">
-                            <div class="handle-line"></div>
-                            <div class="handle-circle">⬌</div>
-                        </div>
-                    </div>
-                    <div class="raster-hud-overlay">
-                        <span id="spectralMetricBadge">SPECTRAL INDEX: STANDBY</span> | 
-                        <span id="deltaMetricBadge">Δ-CHANGE TENSOR: STANDBY</span>
-                    </div>
-                </div>
-
-                <!-- GIS Map Container -->
-                <div class="center-content-box hidden" id="mapViewContainer">
-                    <div id="gisMap"></div>
-                </div>
-
-                <!-- Cellular SMS Broadcast Feed Container -->
-                <div class="center-content-box hidden" id="smsViewContainer">
-                    <div class="sms-dispatch-view">
-                        <div class="sms-view-header">
-                            <div><b>ITU-T CAP v1.2 / C-DOT CELL BROADCAST DISPATCH CONSOLE</b></div>
-                            <div id="smsBroadcastStatus" class="active">BROADCAST STANDBY</div>
-                        </div>
-                        <div class="sms-cards-grid" id="smsCardsGrid">
-                            <div class="empty-sms-state">Run pipeline to trigger emergency SMS and CAP cell broadcasts to target responders.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Live Metrics Grid -->
-                <div class="telemetry-grid">
-                    <div><span data-i18n="m_platform">Platform:</span> <b id="satName">Cartosat-3 / RISAT-1A</b></div>
-                    <div><span data-i18n="m_conf">Confidence:</span> <b id="confidenceVal">-- %</b></div>
-                    <div><span data-i18n="m_area">Impact Footprint:</span> <b id="affectedArea">-- km²</b></div>
-                    <div><span data-i18n="m_threat">Classification:</span> <b id="threatLevel">NORMAL</b></div>
-                </div>
-            </section>
-
-            <!-- RIGHT PANEL: Decision Dossier, 5m Proximity & Infrastructure Triage -->
-            <section class="glass-card panel-right">
-                <div class="card-title"><h3 data-i18n="panel3_title">03 / DECISION SUPPORT DOSSIER</h3></div>
-                
-                <div class="alert-box" id="emergencyBanner">
-                    <div class="alert-icon">⚠️</div>
-                    <div>
-                        <h4 id="alertTitle" data-i18n="standby_status">STANDBY STATUS</h4>
-                        <p id="alertDesc" data-i18n="standby_desc">Armed. Awaiting satellite anomaly detection.</p>
-                    </div>
-                </div>
-
-                <div class="info-block">
-                    <label data-i18n="lbl_evac">Evacuation Directive:</label>
-                    <div id="evacStatus" class="highlight-text" data-i18n="evac_monitoring">MONITORING</div>
-                </div>
-
-                <!-- 5-METER PROXIMITY TELEMETRY MESH -->
-                <div class="proximity-mesh-card">
-                    <div class="mesh-header">
-                        <span data-i18n="mesh_header">5M LOCAL RESPONDER MESH</span>
-                        <span id="meshNodeCount" class="mesh-count" data-i18n="mesh_active">1 DEVICE ACTIVE</span>
-                    </div>
-                    <div class="proximity-indicator">
-                        <div class="radar-sweep-mini"></div>
-                        <div class="proximity-details">
-                            <div><span data-i18n="mesh_prox">Target Proximity:</span> <b id="deviceProximityDist">2.4 m</b></div>
-                            <div><span data-i18n="mesh_status">Perimeter:</span> <b id="deviceStatus" class="active" data-i18n="mesh_zone">MONITORING ZONE</b></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CRITICAL INFRASTRUCTURE STATUS -->
-                <div class="infra-summary-card">
-                    <label>Critical Infrastructure at Risk:</label>
-                    <div class="infra-pills">
-                        <span class="infra-pill red-pill">🏥 District Hospital (1.8 km)</span>
-                        <span class="infra-pill orange-pill">⚡ 220kV Grid Substation (2.9 km)</span>
-                        <span class="infra-pill green-pill">🛡️ High Ground Staging Safe</span>
-                    </div>
-                </div>
-
-                <div class="response-recommendations">
-                    <label data-i18n="lbl_actions">Tactical Resource Allocation Plan:</label>
-                    <ul id="resourceList">
-                        <li data-i18n="action_1">System standing by for telemetry feed.</li>
-                        <li data-i18n="action_2">Automated drone swarm dispatch ready.</li>
-                    </ul>
-                </div>
-
-                <div class="action-buttons">
-                    <button id="sirenBtn" class="mute-btn" onclick="toggleSiren()">🔊 <span data-i18n="btn_siren">TEST EMERGENCY SIREN</span></button>
-                    <button class="print-btn" onclick="generateMissionBriefingPDF()">📄 <span data-i18n="btn_print">PRINT COMMAND REPORT</span></button>
-                    <button class="export-btn" onclick="exportMissionDossier()">📥 <span data-i18n="btn_json">DOWNLOAD JSON TELEMETRY</span></button>
-                </div>
-            </section>
-        </main>
-
-        <!-- FOOTER WITH RESEARCH ATTRIBUTION -->
-        <footer class="hud-footer">
-            <div>CONFIDENTIAL // DEFENSE DISASTER INTELLIGENCE PROTOCOL</div>
-            <div class="author-tag">© 2026 Q-OPTIMA SENTINEL | Researched & Developed by <b>Mr. Aniket Deo</b></div>
-            <div>STATUS: ENCRYPTED DOWNLINK READY</div>
-        </footer>
-    </div>
-
-    <!-- 5-METER EMERGENCY MULTILINGUAL BROADCAST MODAL -->
-    <div id="proximityAlertModal" class="proximity-modal hidden">
-        <div class="modal-content glass-card">
-            <div class="modal-beacon">🚨</div>
-            <h2 id="modalTitle" data-i18n="modal_title">LOCAL PROXIMITY ALERT TRIGGERED</h2>
-            <p class="modal-sub" id="modalSub" data-i18n="modal_sub">DEVICE LOCATED WITHIN &le; 5 METERS OF CRITICAL DISASTER ZONE</p>
-            <div class="modal-metrics">
-                <div><span data-i18n="mesh_prox">ESTIMATED DISTANCE:</span> <span id="modalDist">2.4 m</span></div>
-                <div><span data-i18n="lbl_evac">DIRECTIVE:</span> <span class="critical" id="modalDirective" data-i18n="modal_crit">IMMEDIATE EVACUATION REQUIRED</span></div>
+    <main class="container">
+        <!-- Control Console -->
+        <section class="card controls-card">
+            <div class="card-header-flex">
+                <h2>1. Configure Earth System Investigation</h2>
+                <label class="toggle-label">
+                    <input type="checkbox" id="compareToggle" checked>
+                    <span>Compare Opposing Regional Trends (Divergence Mode)</span>
+                </label>
             </div>
-            <p class="modal-body" id="modalBody" data-i18n="modal_body">Autonomous satellite telemetry has detected critical thermal/inundation escalation. Evacuate to designated staging area immediately.</p>
-            <button class="cyber-btn modal-dismiss-btn" onclick="dismissProximityAlert()">ACKNOWLEDGE & SILENCE</button>
-        </div>
-    </div>
+            <div class="form-row">
+                <div class="control-group">
+                    <label for="varSelect">NASA Mission Variable:</label>
+                    <select id="varSelect"></select>
+                </div>
+                <div class="control-group">
+                    <label for="regionSelect">Primary Region (Region A):</label>
+                    <select id="regionSelect"></select>
+                </div>
+                <div class="control-group" id="regionBGroup">
+                    <label for="regionBSelect">Opposing Comparison Region (Region B):</label>
+                    <select id="regionBSelect"></select>
+                </div>
+                <button id="analyzeBtn" class="btn-primary">Run Mann-Kendall Test</button>
+            </div>
+        </section>
 
-    <!-- SCRIPTS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <!-- Dual KPI Comparison Grid -->
+        <section class="comparison-wrapper">
+            <!-- Region A Metrics -->
+            <div class="region-panel">
+                <h3 id="panelATitle" class="panel-heading">Region A Analysis</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <span class="metric-title">Scientific Verdict</span>
+                        <span id="trendLabelA" class="metric-value">--</span>
+                        <span id="sourceHintA" class="metric-hint">NASA Telemetry</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-title">Mann-Kendall p-value</span>
+                        <span id="pValueA" class="metric-value">--</span>
+                        <span id="pSigA" class="metric-hint">α = 0.05 threshold</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-title">Sen's Slope (Rate/Yr)</span>
+                        <span id="sensSlopeA" class="metric-value">--</span>
+                        <span id="zScoreA" class="metric-hint">Z-Score: --</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Region B Metrics -->
+            <div class="region-panel" id="panelB">
+                <h3 id="panelBTitle" class="panel-heading">Region B Opposing Process</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <span class="metric-title">Scientific Verdict</span>
+                        <span id="trendLabelB" class="metric-value">--</span>
+                        <span id="sourceHintB" class="metric-hint">NASA Telemetry</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-title">Mann-Kendall p-value</span>
+                        <span id="pValueB" class="metric-value">--</span>
+                        <span id="pSigB" class="metric-hint">α = 0.05 threshold</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-title">Sen's Slope (Rate/Yr)</span>
+                        <span id="sensSlopeB" class="metric-value">--</span>
+                        <span id="zScoreB" class="metric-hint">Z-Score: --</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Time Series Chart Canvas -->
+        <section class="card chart-card">
+            <div class="chart-header">
+                <h2 id="chartTitle">Multi-Decadal Trajectory & Non-Parametric Sen's Trendline</h2>
+                <p id="driverExplanation" class="driver-box"></p>
+            </div>
+            <div class="canvas-container">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Scientific Methodology & Data Attribution -->
+        <section class="card info-card">
+            <h2>Methodology & NASA Open Data Sources</h2>
+            <div class="info-content">
+                <p><strong>1. What & Where is Changing?</strong> Evaluates multi-decadal time series from <strong>NASA GRACE/GRACE-FO</strong> (Terrestrial Water Storage), <strong>Terra/Aqua MODIS MOD13A2</strong> (Vegetation NDVI), <strong>NASA AIRS</strong> (Surface Air Temperature), and <strong>NSIDC/NASA Sea Ice Index</strong>.</p>
+                <p><strong>2. Why Do Opposing Trends Occur?</strong> A single planetary driver—such as Polar Amplification or El Niño-Southern Oscillation (ENSO)—triggers opposite local responses (e.g., Arctic sea ice collapse vs. Antarctic regional sea ice expansion, or Sahel regreening vs. Amazon drought browning).</p>
+                <p><strong>3. Statistical Significance:</strong> Uses the non-parametric <em>Mann-Kendall trend test</em> ($p < 0.05$) and <em>Theil-Sen median slope estimator</em> to separate true directional climate signals from natural interannual noise.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p><strong>Team Q-OPTIMA</strong> (Aniket Deo, Sunil Khatri, Loukik Salvi, Abhijeet Jadhav, Prashant Narayane) | 2026 NASA Space Apps Challenge</p>
+        <p class="si-notice">Transparency Notice: Super Intelligence (SI) tools were used to assist in structuring frontend boilerplate code and refining statistical algorithms. All datasets are derived from open NASA Earthdata archives.</p>
+    </footer>
+
     <script src="app.js"></script>
 </body>
 </html>
